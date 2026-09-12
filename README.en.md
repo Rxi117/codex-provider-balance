@@ -43,6 +43,15 @@ This does not modify the Codex you installed. It **copies** the genuine build an
 
 The intended workflow: use the official app day to day, and open the clone whenever you want the provider balances under "Usage remaining". Running both together is fully supported.
 
+## What happens after a Codex update
+
+The genuine Codex is an MSIX package under WindowsApps - read-only and signature-checked, so it cannot be modified. The approach is therefore to **copy** the whole install to `C:\CodexDeepSeekPatched` and inject the balance rows only into the copy.
+
+- The copy **does not update itself**: after the official app upgrades, the copy stays at the version you copied, and it records the source version in `installed-version.txt`.
+- So after an official update, to get "new version + balance rows" you must **copy the new build again and re-apply the patch**. Without re-patching, the copy is stale and its UI may not match the new version.
+- **This is already automated**: the Startup shortcut `Codex Provider Balance Auto Update` silently runs `install-user-patched-codex.ps1` at each login. It compares the currently installed version with the recorded one and, when they differ (or the patch marker is gone), automatically re-copies and re-patches; when they match it exits immediately. Normally you do not manage this by hand.
+- **The real exception**: the patch locates its injection point by matching minified function names (such as `lGt` and `uGt`). If a big Codex refactor renames them, the automatic step cannot find the injection point and fails to patch, and the injection point has to be relocated by hand after re-analyzing the new `app.asar`. That is why this is a "locally maintained tweak" rather than a one-time finished product.
+
 ## Requirements
 
 - Windows 10 / 11
