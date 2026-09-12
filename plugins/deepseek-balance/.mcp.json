@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "deepseek-balance": {
+      "command": "node",
+      "args": [
+        "./server.mjs"
+      ],
+      "env": {
+        "DEEPSEEK_API_KEY": "${DEEPSEEK_API_KEY}"
+      }
+    }
+  }
+}

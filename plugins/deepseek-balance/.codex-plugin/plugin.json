@@ -1,0 +1,37 @@
+{
+  "name": "deepseek-balance",
+  "version": "0.1.0",
+  "description": "Show DeepSeek API account balance inside Codex through a native MCP plugin.",
+  "author": {
+    "name": "Ruoxih",
+    "url": "https://github.com/Ruoxih"
+  },
+  "homepage": "https://github.com/Rxi117/codex-provider-balance",
+  "repository": "https://github.com/Rxi117/codex-provider-balance",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "mcp",
+    "deepseek",
+    "balance",
+    "usage"
+  ],
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "DeepSeek Balance",
+    "shortDescription": "View your DeepSeek API balance in Codex.",
+    "longDescription": "A Codex MCP plugin that reads the official DeepSeek balance API using your own API key and renders the remaining balance as an inline card.",
+    "developerName": "Ruoxih",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "brandColor": "#10A37F",
+    "defaultPrompt": [
+      "Show my DeepSeek balance.",
+      "Check whether my DeepSeek API balance is available.",
+      "Display my current provider balance."
+    ]
+  }
+}

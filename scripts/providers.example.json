@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "providers": [
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "type": "deepseek",
+      "apiKey": "sk-your-deepseek-api-key",
+      "showInCodex": true
+    },
+    {
+      "id": "kimi",
+      "name": "Kimi",
+      "type": "moonshot",
+      "apiKey": "sk-your-moonshot-api-key",
+      "showInCodex": true
+    }
+  ]
+}
+

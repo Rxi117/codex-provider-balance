@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Provider Balance</title>
+<style>
+:root{
+  --bg-1:#fff6fa; --bg-2:#ffe4ef; --bg-3:#ffd6e7;
+  --card:#ffffff; --card-soft:#fff3f8;
+  --ink:#4a2a3c; --ink-soft:#9a6e84; --ink-faint:#c39ab0;
+  --pink-1:#ff9ec4; --pink-2:#f0689f; --pink-3:#e04f8b;
+  --line:#ffd9e8; --good:#3fb98a; --bad:#e56a8c;
+  --shadow:0 18px 36px -18px rgba(224,79,139,.45);
+  --shadow-soft:0 10px 24px -16px rgba(224,79,139,.5);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--ink);
+  font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;
+  background:
+    radial-gradient(1200px 600px at 12% -10%, #ffffff 0%, transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, #ffc9de 0%, transparent 50%),
+    linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
+  background-attachment:fixed;
+}
+main{max-width:920px;margin:0 auto;padding:22px 22px 40px}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.brand{width:58px;height:58px;border-radius:17px;object-fit:cover;box-shadow:var(--shadow-soft);border:2px solid #fff;background:#fff}
+.titles{flex:1;min-width:0}
+h1{font-size:20px;margin:0;letter-spacing:.2px}
+.sub{color:var(--ink-soft);font-size:12.5px;margin-top:2px}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-soft);
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;box-shadow:var(--shadow-soft)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(63,185,138,.16)}
+.dot.bad{background:var(--bad);box-shadow:0 0 0 4px rgba(229,106,140,.16)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.card.soft{background:linear-gradient(180deg,#fff 0%, var(--card-soft) 100%)}
+.card h2{font-size:13px;margin:0 0 12px;color:var(--ink-soft);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:1.2fr 150px 1.5fr auto auto;gap:10px;align-items:center}
+input,select{
+  width:100%;border:1.5px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);
+  padding:11px 13px;font:inherit;outline:none;transition:border-color .15s,box-shadow .15s
+}
+input:focus,select:focus{border-color:var(--pink-1);box-shadow:0 0 0 4px rgba(255,158,196,.25)}
+button{border:0;border-radius:14px;padding:11px 16px;font:inherit;font-weight:700;cursor:pointer;
+  color:#fff;background:linear-gradient(180deg,var(--pink-1),var(--pink-2));box-shadow:0 10px 20px -10px rgba(224,79,139,.9), inset 0 1px 0 rgba(255,255,255,.5);
+  transition:transform .12s, filter .12s}
+button:hover{filter:brightness(1.03)}
+button:active{transform:translateY(1px)}
+button.ghost{background:#fff;color:var(--pink-3);border:1.5px solid var(--line);box-shadow:var(--shadow-soft)}
+button.tiny{padding:8px 12px;border-radius:12px;font-size:12.5px}
+.keywrap{position:relative;display:flex;align-items:center}
+.keywrap input{padding-right:46px}
+.eye{position:absolute;right:7px;top:50%;transform:translateY(-50%);padding:5px 9px;border-radius:10px;font-size:12px;font-weight:700;background:#fff;color:var(--pink-3);border:1.5px solid var(--line);box-shadow:none}
+.eye:hover{filter:brightness(1.02);background:#fff5fa}
+button.eye:active{transform:translateY(-50%)}
+.toggle{display:inline-flex;align-items:center;gap:8px;color:var(--ink-soft);font-size:12.5px;white-space:nowrap;cursor:pointer;user-select:none}
+.toggle input{width:auto;accent-color:var(--pink-2)}
+.provider{padding:14px;border-radius:18px;background:linear-gradient(180deg,#fff, #fff7fb);border:1.5px solid var(--line);box-shadow:var(--shadow-soft);margin:10px 0}
+.provider .rowline{display:grid;grid-template-columns:1.2fr 140px 1.4fr auto auto auto;gap:9px;align-items:center}
+.balance{display:flex;align-items:baseline;gap:8px;margin-top:11px;padding:11px 13px;border-radius:14px;background:linear-gradient(120deg,#fff0f6,#ffe3ee)}
+.amount{font-size:22px;font-weight:800;color:var(--pink-3);font-variant-numeric:tabular-nums}
+.amount.small{font-size:14px;color:var(--ink-soft);font-weight:600}
+.balmeta{color:var(--ink-soft);font-size:12px}
+.topup{font-size:12.5px;font-weight:700;color:var(--pink-3);text-decoration:none;padding:5px 11px;border-radius:999px;background:#fff;border:1.5px solid var(--line);box-shadow:var(--shadow-soft);white-space:nowrap}
+.topup:hover{background:#fff5fa;border-color:var(--pink-1)}
+.spacer{flex:1}
+.muted{color:var(--ink-faint)}
+.pill{display:inline-block;font-size:11.5px;padding:3px 9px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
+.empty{color:var(--ink-faint);text-align:center;padding:22px 10px;border:1.5px dashed var(--line);border-radius:16px;background:#fff9fc}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:#4a2a3c;color:#fff;padding:10px 16px;border-radius:12px;font-size:13px;box-shadow:var(--shadow);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.foot{text-align:center;color:var(--ink-faint);font-size:12px;margin-top:8px}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#ffc4dc;border-radius:10px;border:3px solid transparent;background-clip:content-box}
+@media (max-width:720px){
+  .grid{grid-template-columns:1fr 1fr}
+  .grid .keywrap{grid-column:1 / -1}
+  .provider .rowline{grid-template-columns:1fr 1fr}
+  .provider .rowline .keywrap{grid-column:1 / -1}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <img class="brand" src="../assets/icon.png" alt="icon" />
+    <div class="titles">
+      <h1>Provider Balance 控制台</h1>
+      <div class="sub">写入厂商名与 API key。点输入框里的“显示”可查看完整 key，勾选“菜单显示”决定该厂商余额是否出现在 Codex 头像菜单里。</div>
+    </div>
+    <span class="status"><span class="dot" id="dot"></span><span id="statusText">连接中…</span></span>
+  </div>
+
+  <section class="card soft">
+    <h2>添加厂商</h2>
+    <div class="grid">
+      <input id="name" placeholder="厂商名字，例如 DeepSeek" />
+      <select id="type"></select>
+      <div class="keywrap"><input id="apiKey" type="password" placeholder="API key" /><button class="eye" type="button" onclick="toggleKey(this)">显示</button></div>
+      <label class="toggle" title="勾选后该厂商余额显示在 Codex 头像菜单里"><input id="show" type="checkbox" checked />菜单显示</label>
+      <button id="addBtn">添加</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <h2 style="margin:0">已接入厂商</h2>
+      <span class="spacer"></span>
+      <button class="ghost tiny" id="refreshBtn">刷新余额</button>
+    </div>
+    <div id="providers"></div>
+  </section>
+
+  <div class="foot">保存后余额会自动缓存并在 Codex 头像菜单中显示 · 本机运行，不会上传你的 key</div>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const params = new URLSearchParams(location.search);
+const AGENT = params.get("agent") || "http://127.0.0.1:17561";
+let providerTypes = {};
+let balances = {};
+let toastTimer = null;
+
+function esc(v){
+  return String(v ?? "").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+function toggleKey(btn){
+  const input = btn.parentElement.querySelector("input");
+  const show = input.type === "password";
+  input.type = show ? "text" : "password";
+  btn.textContent = show ? "隐藏" : "显示";
+}
+function toast(msg){
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove("show"), 1800);
+}
+async function api(path, options){
+  const res = await fetch(AGENT + path, { headers: {"content-type":"application/json"}, ...(options||{}) });
+  if(!res.ok) throw new Error("HTTP " + res.status);
+  return res.json();
+}
+function setStatus(ok, text){
+  const dot = document.getElementById("dot");
+  dot.classList.toggle("bad", !ok);
+  document.getElementById("statusText").textContent = text;
+}
+function balanceHtml(p){
+  const b = balances[p.id];
+  if(!b) return '<div class="balance"><span class="amount small">余额加载中…</span></div>';
+  if(b.ok){
+    const symbol = b.currency === "CNY" ? "¥" : b.currency === "USD" ? "$" : (b.currency||"") + " ";
+    const avail = b.available === false ? '<span class="pill">不可用</span>' : "";
+    return '<div class="balance"><span class="amount">'+symbol+esc(b.totalBalance)+'</span>'+avail
+      + '<span class="spacer"></span>'
+      + (p.topupUrl ? '<a class="topup" href="'+esc(p.topupUrl)+'" target="_blank" rel="noreferrer">点击去充值 ↗</a>' : '<span class="balmeta">赠送 '+esc(b.grantedBalance||"0.00")+' · 充值 '+esc(b.toppedUpBalance||"0.00")+'</span>')
+      + '</div>';
+  }
+  return '<div class="balance"><span class="amount small">'+esc(b.label||"获取失败")+'</span><span class="spacer"></span><span class="balmeta">'+esc(b.error||"")+'</span></div>';
+}
+function typeOptions(selected){
+  return Object.entries(providerTypes)
+    .map(([k,v]) => '<option value="'+k+'"'+(selected===k?' selected':'')+'>'+esc(v)+'</option>')
+    .join("");
+}
+function renderProviders(list){
+  const box = document.getElementById("providers");
+  if(!list.length){ box.innerHTML = '<div class="empty">还没有配置厂商，先在上面添加一个吧 ✨</div>'; return; }
+  box.innerHTML = list.map(p => (
+    '<div class="provider">'
+    + '<div class="rowline">'
+    +   '<input value="'+esc(p.name)+'" onchange="updateProvider(\''+p.id+'\',{name:this.value})" />'
+    +   '<select onchange="updateProvider(\''+p.id+'\',{type:this.value})">'+typeOptions(p.type)+'</select>'
+    +   '<div class="keywrap"><input type="password" class="keyinput" value="'+esc(p.apiKey||"")+'" placeholder="'+(p.hasApiKey?esc(p.maskedApiKey):"API key")+'" onchange="updateProvider(\''+p.id+'\',{apiKey:this.value})" /><button class="eye" type="button" onclick="toggleKey(this)">显示</button></div>'
+    +   '<label class="toggle" title="勾选后该厂商余额显示在 Codex 头像菜单里"><input type="checkbox" '+(p.showInCodex?"checked":"")+' onchange="updateProvider(\''+p.id+'\',{showInCodex:this.checked})" />菜单显示</label>'
+    +   '<span class="pill">'+(p.type)+'</span>'
+    +   '<button class="ghost tiny" onclick="removeProvider(\''+p.id+'\')">删除</button>'
+    + '</div>'
+    + balanceHtml(p)
+    + '</div>'
+  )).join("");
+}
+async function refresh(){
+  try{
+    const cfg = await api("/config");
+    providerTypes = cfg.providerTypes || {};
+    document.getElementById("type").innerHTML = typeOptions();
+    renderProviders(cfg.providers || []);
+    const labels = await api("/menu-labels");
+    balances = {};
+    (labels.balances||[]).forEach(b => { balances[b.provider] = b; });
+    renderProviders(cfg.providers || []);
+    setStatus(true, "已连接 · 实时同步");
+  }catch(e){
+    setStatus(false, "未连接");
+    toast("无法连接本地服务，正在尝试重启…");
+    try{ await window.balanceApp?.restartAgent(); }catch{}
+  }
+}
+async function addProvider(){
+  const name = document.getElementById("name").value.trim();
+  const type = document.getElementById("type").value;
+  const apiKey = document.getElementById("apiKey").value.trim();
+  const showInCodex = document.getElementById("show").checked;
+  if(!name){ toast("请填写厂商名字"); return; }
+  await api("/config/providers", { method:"POST", body: JSON.stringify({name, type, apiKey, showInCodex}) });
+  document.getElementById("name").value = "";
+  document.getElementById("apiKey").value = "";
+  document.getElementById("show").checked = true;
+  toast("已添加 " + name);
+  await refresh();
+}
+async function updateProvider(id, patch){
+  await api("/config/providers/"+encodeURIComponent(id), { method:"POST", body: JSON.stringify(patch) });
+  await refresh();
+}
+async function removeProvider(id){
+  await api("/config/providers/"+encodeURIComponent(id)+"/delete", { method:"POST" });
+  toast("已删除");
+  await refresh();
+}
+document.getElementById("addBtn").addEventListener("click", addProvider);
+document.getElementById("refreshBtn").addEventListener("click", refresh);
+document.getElementById("apiKey").addEventListener("keydown", e => { if(e.key==="Enter") addProvider(); });
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# local secrets
+providers.json
+providers.local.json
+
+# asar artifacts produced by the patcher
+*.asar
+*.asar.new
+*.asar.bak*
+*.patch-test
+scripts/patched-primary.mjs
+
+# node / electron
+node_modules/
+desktop/release/
+
+# logs and scratch
+*.log
+logs/
+
