@@ -1,5 +1,7 @@
 # Codex Balance Menu Patch - Clone Edition (codex-provider-balance)
 
+**English** | [简体中文](README.md)
+
 Make a **copy** of the genuine Codex desktop app, called the "clone", and patch only that copy so each provider's API balance shows up in the profile menu right under "Usage remaining". The clone and the official app can run at the same time.
 
 Inside the clone's profile menu: one row per provider, each with the matching vendor logo, and clicking any row opens the local config panel.
@@ -170,4 +172,3 @@ codex-provider-balance/
 ## License
 
 MIT. See `LICENSE`.
-
