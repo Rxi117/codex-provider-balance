@@ -11,6 +11,23 @@ Show per-provider API balances (DeepSeek, Kimi, ...) directly inside the Codex d
 
 The Chinese `README.md` is the full documentation; it covers install steps, supported providers, the asar patching pitfalls, and privacy.
 
+## Clone + patch, side by side with the official app
+
+This does not modify the Codex you installed. It **copies** the official build and patches only that copy. That copy is the "clone":
+
+- the official Codex (the MSIX package under WindowsApps) is left untouched and still opens normally;
+- the clone lives in `C:\CodexDeepSeekPatched` - its own folder, its own executable, the only one carrying the patch;
+- the clone uses its own Electron data directory `C:\CodexPatchedUserData`, so window state and local storage stay separate;
+- to undo everything, just delete the clone folder; the official install is unaffected.
+
+**The clone and the official app can run at the same time.** Two windows open together work fine:
+
+- they sign in to the same account and read the same `%USERPROFILE%\.codex`, so the task list, config, skills, plugins, and quota are one shared set, not two separate accounts;
+- the balance rows appear only in the **clone's** profile menu, since the patch is applied only to the clone;
+- the one caution: because both share a single `.codex`, do not edit the **same task** in both at once, to avoid writer-lock contention. Different tasks in parallel are fine.
+
+The intended workflow is: use the official app day to day, and open the clone whenever you want the provider balances to show under "Usage remaining". Running both together is fully supported.
+
 ## Requirements
 
 - Windows 10/11
@@ -39,4 +56,3 @@ Keys live only in `%USERPROFILE%\.codex-provider-balances\providers.json`. The s
 ## License
 
 MIT. See `LICENSE`.
-
